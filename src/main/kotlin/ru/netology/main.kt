@@ -8,7 +8,7 @@ fun main(){
     Service.add(note1)
     Service.add(Comment("text",null,noteTest))
 
-    //Service.edit(2,Note())
+    Service.edit(2,Note("new","new"))
 
 
 

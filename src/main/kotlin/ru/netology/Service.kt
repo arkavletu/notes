@@ -52,10 +52,10 @@ object Service {
         } else throw WrongIdException()
     }
 
-    fun <T>edit(id: Int, obj: T){
+    fun edit(id: Int, obj: WallObject<*>){
         val index: Int = wallObjects.indexOf(findById(id))
         if(index >= 0) {
-            val x: T = wallObjects[index]
+            val x: WallObject<*> = wallObjects[index]
             if (!x.deleted) {
                 obj.date = x.date
                 obj.id = x.id
