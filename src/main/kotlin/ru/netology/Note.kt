@@ -1,7 +1,6 @@
 package ru.netology
 
 
-
 data class Note(
     var title: String,
     var text: String,
@@ -9,8 +8,8 @@ data class Note(
     val isPrivate: Boolean = false,
     val isPrivateCommentAllowed: Boolean = false,
     var canComment: Boolean = true,
-    override var ownerId: Int = 0
-): WallObject("Note"){
+    override var ownerId: Int = 0,
+) : WallObject("Note") {
 
 
     override var deleted: Boolean = false

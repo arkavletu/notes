@@ -1,6 +1,5 @@
 package ru.netology
 
-// tests, readme (-guid)
 object Service {
     internal var wallObjects = mutableListOf<WallObject>()
 
@@ -26,9 +25,9 @@ object Service {
 
 
     fun printNotDeleted(): List<WallObject> {
-        var notDeleted = listOf<WallObject>()
+        val notDeleted = mutableListOf<WallObject>()
         wallObjects.forEach { if (!it.deleted) notDeleted += it }
-        if(notDeleted.isEmpty()) println("Empty. Create a note!")
+        if (notDeleted.isEmpty()) println("Empty. Create a note!")
         return notDeleted
     }
 
@@ -71,19 +70,18 @@ object Service {
     }
 
     fun getFilteredByOwnerId(id: Int): List<WallObject> {
-        var filtered = listOf<WallObject>()
-        filtered = (wallObjects.filter { it.ownerId == id && !it.deleted})
+        val filtered = (wallObjects.filter { it.ownerId == id && !it.deleted })
         if (filtered.isEmpty()) throw WrongIdException()
         return filtered
     }
 
     fun seeComments(id: Int): List<WallObject> {
         val index: Int? = wallObjects.indexOf(findById(id))
-        var comments = listOf<WallObject>()
+        val comments = mutableListOf<WallObject>()
         if (index != null) {
             if (index >= 0 && !wallObjects[index].deleted) {
-                comments += wallObjects[index].commentsStack.filter {!it.deleted}
-                if(comments.isEmpty()) println("No comments")
+                comments += wallObjects[index].commentsStack.filter { !it.deleted }
+                if (comments.isEmpty()) println("No comments")
             } else throw WrongIdException()
         } else throw WrongIdException()
         return comments

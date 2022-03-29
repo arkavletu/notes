@@ -1,9 +1,8 @@
 package ru.netology
 
-import org.junit.Test
-
 import org.junit.Assert.*
 import org.junit.Before
+import org.junit.Test
 
 class ServiceTest {
     @Before
@@ -18,7 +17,6 @@ class ServiceTest {
         Service.add(noteTest)
         val note1 = Note("none", "second")
         Service.add(note1)
-
         val result = Service.findById(1)
         assertNotNull(result)
     }
@@ -29,7 +27,6 @@ class ServiceTest {
         Service.add(noteTest)
         val note1 = Note("none", "second")
         Service.add(note1)
-
         val result = Service.findById(4)
         assertNull(result)
     }
@@ -71,9 +68,7 @@ class ServiceTest {
         val commentTest = Comment("none", null, null)
         Service.add(commentTest)
         Service.remove(1)
-
         val result = Service.printNotDeleted()
-
         assertTrue(result.size == 1)
     }
 
@@ -132,7 +127,7 @@ class ServiceTest {
         assertTrue(result && idNotChanged)
     }
 
-    @Test(expected = WrongIdException::class) // и на удаленном еще
+    @Test(expected = WrongIdException::class)
     fun editFalse() {
         val noteTest = Note("title", "text")
         Service.add(noteTest)
@@ -141,7 +136,7 @@ class ServiceTest {
 
     }
 
-    @Test(expected = WrongIdException::class) // и на удаленном еще
+    @Test(expected = WrongIdException::class)
     fun editDeleted() {
         val noteTest = Note("title", "text")
         Service.add(noteTest)
@@ -170,9 +165,7 @@ class ServiceTest {
         Service.add(noteTest)
         val commentTest = Comment("none", null, noteTest)
         Service.add(commentTest)
-
         Service.getFilteredByOwnerId(5)
-
     }
 
     @Test
@@ -181,9 +174,7 @@ class ServiceTest {
         Service.add(noteTest)
         val commentTest = Comment("none", null, noteTest)
         Service.add(commentTest)
-
         val result = Service.seeComments(1)
-
         assertTrue(result.isNotEmpty())
     }
 
@@ -193,8 +184,6 @@ class ServiceTest {
         Service.add(noteTest)
         val commentTest = Comment("none", null, noteTest)
         Service.add(commentTest)
-
         Service.seeComments(5)
-
     }
 }
