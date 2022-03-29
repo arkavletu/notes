@@ -72,7 +72,7 @@ object Service {
     fun getFilteredByOwnerId(id: Int): List<WallObject> {
         val filtered = (wallObjects.filter { it.ownerId == id && !it.deleted })
         if (filtered.isEmpty()) throw WrongIdException()
-        return wallObjects
+        return filtered
     }
 
     fun seeComments(id: Int): List<WallObject> {
