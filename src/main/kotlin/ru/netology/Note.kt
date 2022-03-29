@@ -10,11 +10,11 @@ data class Note(
     val isPrivateCommentAllowed: Boolean = false,
     var canComment: Boolean = true,
     override var ownerId: Int = 0
-): WallObject<Note>("Note"){
+): WallObject("Note"){
 
 
     override var deleted: Boolean = false
-    override var commentsStack: MutableList<WallObject<*>> = mutableListOf()
+    override var commentsStack = mutableListOf<WallObject>()
     override var comments: Int = commentsStack.size
 
 

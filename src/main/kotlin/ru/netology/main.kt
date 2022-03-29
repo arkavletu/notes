@@ -2,13 +2,13 @@ package ru.netology
 
 
 fun main(){
-    val noteTest: WallObject<Note> = Note("title","text")
+    val noteTest = Note("title", "text")
     Service.add(noteTest)
-    val note1: WallObject<Note> = Note("none","second")
-    Service.add(note1)
-    Service.add(Comment("text",null,noteTest))
+    val commentTest = Comment("none", null, null)
+    Service.add(commentTest)
+    //Service.remove(1)
 
-    Service.edit(2,Note("new","new"))
+    println(Service.seeComments(1))
 
 
 

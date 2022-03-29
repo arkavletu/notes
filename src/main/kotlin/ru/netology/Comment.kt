@@ -4,13 +4,13 @@ package ru.netology
 
 data class Comment(
     val text: String,
-    val parentComment:  WallObject<*>?,
-    val parentNote: WallObject<*>?,
+    val parentComment:  Comment?,
+    val parentNote: Note?,
     override var ownerId: Int = 0
-    ): WallObject<Comment>("Comment"){
+    ): WallObject("Comment"){
 
-    var parentsStack = emptyArray<Int?>()
-    override var commentsStack: MutableList<WallObject<*>> = mutableListOf()
+    var parentsStack = mutableListOf<Int?>()
+    override var commentsStack = mutableListOf<WallObject>()
     override var comments: Int = commentsStack.size
 
     override var deleted: Boolean = false
@@ -34,7 +34,7 @@ data class Comment(
             }
 
         }
-        get() = parentComment?.id?: null
+        get() = parentComment?.id
 
     var parentId: Int? = 0
         get() = parentNote?.id?: parentComment?.id
@@ -44,6 +44,6 @@ data class Comment(
 
     override fun toString(): String {
         return "\n$type id $id\nFrom user $ownerId\n$date\n$text\nto user $replyToUser\n" +
-                "to comment $replyToComment\nparents stack ${parentsStack.contentToString()}"
+                "to comment $replyToComment\nparents stack ${parentsStack.toString()}"
     }
 }

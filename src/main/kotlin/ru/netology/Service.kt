@@ -1,80 +1,97 @@
 package ru.netology
+
 // tests, readme (-guid)
 object Service {
-    internal var wallObjects = mutableListOf<WallObject<*>>()
+    internal var wallObjects = mutableListOf<WallObject>()
 
-    fun printNotDeleted(){
-        wallObjects.forEach { if (!it.deleted) println(it) }
-    }
-
-
-    fun findById(id: Int): WallObject<*>? {          // find and return id
+    fun findById(id: Int): WallObject? {
         return wallObjects.firstOrNull { it.id == id }
     }
 
-    fun add(element:  WallObject<*>): Boolean {
+    fun <T : WallObject> add(element: T): Boolean {
         if (findById(element.id) == null) {
             element.createId(wallObjects.size)
             wallObjects.add(element)
-
-            if(element is Comment && element.parentId != 0){
-                element.parentsStack += element.parentId
-            }
-            if(element is Comment && element.parentNote is Note) {
-                element.parentNote.commentsStack += element
-            }
-            if(element is Comment && element.parentComment is Comment && element.parentsStack.isNotEmpty()) {
-                element.parentsStack += element.parentComment.parentsStack
+            when (element) {
+                is Comment -> {
+                    element.parentsStack += element.parentId
+                    element.parentNote?.commentsStack?.plusAssign(element)
+                    if (element.parentComment != null) element.parentsStack += element.parentComment.parentsStack
+                }
             }
             return true
         }
         return false
     }
 
-    fun remove(id: Int) { // CHECK
-        val objId: Int = wallObjects.indexOf(findById(id))
-        if (objId >= 0 && !wallObjects[objId].deleted) {
-            wallObjects[objId].deleted = true
-            for (obj in wallObjects){
-                if (obj is Comment && obj.parentsStack.contains(wallObjects[objId].id)){
-                    obj.deleted = true
-                }
-            }
-        }else throw WrongIdException()
+
+    fun printNotDeleted(): List<WallObject> {
+        var notDeleted = listOf<WallObject>()
+        wallObjects.forEach { if (!it.deleted) notDeleted += it }
+        if(notDeleted.isEmpty()) println("Empty. Create a note!")
+        return notDeleted
     }
 
-    fun restore(id: Int){
-        val objId: Int = wallObjects.indexOf(findById(id))
-        if (objId >= 0 && wallObjects[objId].deleted){
 
-                !wallObjects[objId].deleted
-
+    fun remove(id: Int) {
+        val objId: Int? = wallObjects.indexOf(findById(id))
+        if (objId != null) {
+            if (objId >= 0 && !wallObjects[objId].deleted) {
+                wallObjects[objId].deleted = true
+                for (obj in wallObjects) {
+                    if (obj is Comment && obj.parentsStack.contains(wallObjects[objId].id)) {
+                        obj.deleted = true
+                    }
+                }
+            } else throw WrongIdException()
         } else throw WrongIdException()
     }
 
-    fun edit(id: Int, obj: WallObject<*>){
-        val index: Int = wallObjects.indexOf(findById(id))
-        if(index >= 0) {
-            val x: WallObject<*> = wallObjects[index]
+    fun restore(id: Int) {
+        val objId: Int? = wallObjects.indexOf(findById(id))
+        if (objId != null) {
+            if (objId >= 0 && wallObjects[objId].deleted) {
+
+                wallObjects[objId].deleted = false
+
+            } else throw WrongIdException()
+        } else throw WrongIdException()
+    }
+
+    fun <T : WallObject> edit(id: Int, obj: T) {
+        val index: Int? = wallObjects.indexOf(findById(id))
+        if (index != null && index >= 0) {
+            val x: WallObject = wallObjects[index] // element to edit
             if (!x.deleted) {
                 obj.date = x.date
                 obj.id = x.id
                 wallObjects[index] = obj
-            }
-        }else throw WrongIdException()
+            } else throw WrongIdException()
+        } else throw WrongIdException()
     }
 
-    fun getFilteredByOwnerId(id: Int){
-      val result = wallObjects.filter { it.ownerId == id }
-        println(result)
+    fun getFilteredByOwnerId(id: Int): List<WallObject> {
+        var filtered = listOf<WallObject>()
+        filtered = (wallObjects.filter { it.ownerId == id && !it.deleted})
+        if (filtered.isEmpty()) throw WrongIdException()
+        return filtered
     }
 
-    fun seeComments(id: Int){ //null
-        val index: Int = wallObjects.indexOf(findById(id))
-
-        if(index >= 0 && !wallObjects[index].deleted){
-            val obj: WallObject<*> = wallObjects[index]
-            obj.commentsStack.forEach { if (!it.deleted) println(it) }
-        }
+    fun seeComments(id: Int): List<WallObject> {
+        val index: Int? = wallObjects.indexOf(findById(id))
+        var comments = listOf<WallObject>()
+        if (index != null) {
+            if (index >= 0 && !wallObjects[index].deleted) {
+                comments += wallObjects[index].commentsStack.filter {!it.deleted}
+                if(comments.isEmpty()) println("No comments")
+            } else throw WrongIdException()
+        } else throw WrongIdException()
+        return comments
     }
+
+    fun emptySingleton() {
+        wallObjects.clear()
+    }
+
 }
+
